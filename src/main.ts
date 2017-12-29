@@ -41,26 +41,6 @@ let click$ = Observable.fromEvent(document, 'click');
 let keydown$ = Observable.fromEvent(document, 'keydown');
 
 /**
- * Determines the speed of the snake
- */
-let playing$ = click$
-  .scan(val => !val, true)
-  .startWith(true);
-
-/**
- * Determines the speed of the snake
- */
-let ticks$ = playing$
-  .switchMap(playing => {
-    if (playing) {
-      return Observable.interval(SPEED);
-    }
-
-    return Observable.never();
-  })
-
-
-/**
  * Change direction of the snake based on the latest arrow keypress by the user
  */
 let direction$ = keydown$
@@ -89,6 +69,32 @@ let snakeLength$ = length$
 let score$ = snakeLength$
   .startWith(0)
   .scan((score, _) => score + POINTS_PER_APPLE);
+
+/**
+ * Determines the speed of the snake
+ */
+let speed$ = snakeLength$
+  .startWith(SNAKE_LENGTH)
+  .switchMap(snakeLength => Observable.interval(SPEED - (snakeLength - SNAKE_LENGTH) * 30));
+
+/**
+ * Determines the speed of the snake
+ */
+let playing$ = click$
+  .scan(val => !val, true)
+  .startWith(true);
+
+/**
+ * Determines the speed of the snake
+ */
+let ticks$ = playing$
+  .switchMap(playing => {
+    if (playing) {
+      return speed$;
+    }
+
+    return Observable.never();
+  })
 
 /**
  * Accumulates an array of body segments. Each segment is represented
