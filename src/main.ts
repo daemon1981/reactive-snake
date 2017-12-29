@@ -61,7 +61,7 @@ let length$ = new BehaviorSubject<number>(SNAKE_LENGTH);
  */
 let snakeLength$ = length$
   .scan((step, snakeLength) => snakeLength + step)
-  .share();
+  .shareReplay(1);
 
 /**
  * Player's score
@@ -74,8 +74,7 @@ let score$ = snakeLength$
  * Determines the speed of the snake
  */
 let speed$ = snakeLength$
-  .startWith(SNAKE_LENGTH)
-  .switchMap(snakeLength => Observable.interval(SPEED - (snakeLength - SNAKE_LENGTH) * 30));
+  .switchMap(snakeLength => Observable.interval(SPEED - (snakeLength - SNAKE_LENGTH) * 40));
 
 /**
  * Determines the speed of the snake
