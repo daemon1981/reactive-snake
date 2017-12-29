@@ -35,15 +35,30 @@ document.body.appendChild(canvas);
 const INITIAL_DIRECTION = DIRECTIONS[Key.RIGHT];
 
 /**
- * Determines the speed of the snake
- */
-let ticks$ = Observable.interval(SPEED);
-
-/**
  * Track some general user interactions with the document
  */
 let click$ = Observable.fromEvent(document, 'click');
 let keydown$ = Observable.fromEvent(document, 'keydown');
+
+/**
+ * Determines the speed of the snake
+ */
+let playing$ = click$
+  .scan(val => !val, true)
+  .startWith(true);
+
+/**
+ * Determines the speed of the snake
+ */
+let ticks$ = playing$
+  .switchMap(playing => {
+    if (playing) {
+      return Observable.interval(SPEED);
+    }
+
+    return Observable.never();
+  })
+
 
 /**
  * Change direction of the snake based on the latest arrow keypress by the user

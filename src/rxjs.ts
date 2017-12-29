@@ -3,6 +3,7 @@ export { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export { animationFrame } from 'rxjs/scheduler/animationFrame';
 
 import 'rxjs/add/observable/interval';
+import 'rxjs/add/observable/never';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/of';
