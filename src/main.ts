@@ -1,5 +1,17 @@
-import { Observable, BehaviorSubject, animationFrame } from './rxjs';
-import { DIRECTIONS, SPEED, SNAKE_LENGTH, FPS, APPLE_COUNT, POINTS_PER_APPLE } from './constants';
+import {
+  Observable,
+  BehaviorSubject,
+  animationFrame
+} from './rxjs';
+import {
+  DIRECTIONS,
+  SPEED_INIT,
+  SPEED_ACC,
+  SNAKE_LENGTH,
+  FPS,
+  APPLE_COUNT,
+  POINTS_PER_APPLE
+} from './constants';
 import { Key, Point2D, Scene } from './types';
 
 import {
@@ -88,7 +100,13 @@ let score$ = snakeLength$
  * Determines the speed of the snake
  */
 let speed$ = snakeLength$
-  .switchMap(snakeLength => Observable.interval(SPEED - (snakeLength - SNAKE_LENGTH) * 40));
+  .switchMap(snakeLength => {
+    const inc = snakeLength - SNAKE_LENGTH;
+    const acc = Math.sqrt((inc + SPEED_ACC) / SPEED_ACC);
+    const newSpeed = SPEED_INIT / acc;
+    console.log(newSpeed);
+    return Observable.interval(newSpeed);
+  });
 
 /**
  * Determines the speed of the snake

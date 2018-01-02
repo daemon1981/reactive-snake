@@ -5,7 +5,8 @@ export const SNAKE_LENGTH = 5;
 export const APPLE_COUNT = 2;
 export const POINTS_PER_APPLE = 1;
 
-export const SPEED = 200;
+export const SPEED_INIT = 200;
+export const SPEED_ACC = 5;
 export const FPS = 60;
 
 export const DIRECTIONS: Directions = {
