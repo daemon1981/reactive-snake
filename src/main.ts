@@ -40,12 +40,26 @@ const INITIAL_DIRECTION = DIRECTIONS[Key.RIGHT];
 let click$ = Observable.fromEvent(document, 'click');
 let keydown$ = Observable.fromEvent(document, 'keydown');
 
+
+/**
+ * Determines the speed of the snake
+ */
+let playing$ = click$
+  .scan(val => !val, true)
+  .startWith(true);
+
 /**
  * Change direction of the snake based on the latest arrow keypress by the user
  */
 let direction$ = keydown$
   .map((event: KeyboardEvent) => DIRECTIONS[event.keyCode])
-  .filter(direction => !!direction)
+  .withLatestFrom(playing$, (direction, playing) => {
+    if (!playing) {
+      return;
+    }
+    return direction;
+  })
+  .filter((direction) => !!direction)
   .scan(nextDirection)
   .startWith(INITIAL_DIRECTION)
   .distinctUntilChanged();
@@ -79,13 +93,6 @@ let speed$ = snakeLength$
 /**
  * Determines the speed of the snake
  */
-let playing$ = click$
-  .scan(val => !val, true)
-  .startWith(true);
-
-/**
- * Determines the speed of the snake
- */
 let ticks$ = playing$
   .switchMap(playing => {
     if (playing) {
@@ -93,7 +100,7 @@ let ticks$ = playing$
     }
 
     return Observable.never();
-  })
+  });
 
 /**
  * Accumulates an array of body segments. Each segment is represented
