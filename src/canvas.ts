@@ -15,17 +15,24 @@ export function createCanvasElement() {
 }
 
 export function renderScene(ctx: CanvasRenderingContext2D, scene: Scene) {
-  renderBackground(ctx);
+  renderPlayingBackground(ctx);
   renderScore(ctx, scene.score);
   renderApples(ctx, scene.apples);
   renderSnake(ctx, scene.snake);
+
+  if (!scene.playing) {
+    renderPaused(ctx);
+  }
 }
 
 export function renderScore(ctx: CanvasRenderingContext2D, score: number) {
-  let textX = CANVAS_WIDTH / 2;
-  let textY = CANVAS_HEIGHT / 2;
+  renderText(ctx, score.toString(), 'rgba(0, 0, 0, 0.1)', 150);
+}
 
-  drawText(ctx, score.toString(), textX, textY, 'rgba(0, 0, 0, 0.1)', 150);
+export function renderPaused(ctx: CanvasRenderingContext2D) {
+  renderBlockedBackground(ctx);
+
+  renderText(ctx, 'Paused', 'black', 25);
 }
 
 export function renderApples(ctx: CanvasRenderingContext2D, apples: any[]) {
@@ -37,13 +44,16 @@ export function renderSnake(ctx: CanvasRenderingContext2D, snake: Array<Point2D>
 }
 
 export function renderGameOver(ctx: CanvasRenderingContext2D) {
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  renderBlockedBackground(ctx);
 
+  renderText(ctx, 'GAME OVER!', 'black', 25);
+}
+
+export function renderText(ctx: CanvasRenderingContext2D, text: string, color: string, size: number) {
   let textX = CANVAS_WIDTH / 2;
   let textY = CANVAS_HEIGHT / 2;
 
-  drawText(ctx, 'GAME OVER!', textX, textY, 'black', 25);
+  drawText(ctx, text, textX, textY, color, size);
 }
 
 export function getRandomPosition(snake: Array<Point2D> = []): Point2D {
@@ -71,8 +81,17 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function renderBackground(ctx: CanvasRenderingContext2D) {
+function renderBlockedBackground(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  renderBackground(ctx);
+}
+
+function renderPlayingBackground(ctx: CanvasRenderingContext2D) {
   ctx.fillStyle = '#EEE';
+  renderBackground(ctx);
+}
+
+function renderBackground(ctx: CanvasRenderingContext2D) {
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 

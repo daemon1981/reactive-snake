@@ -150,7 +150,7 @@ let appleEaten$ = apples$
  * Core game logic which returns an Observable of the scene. This will be
  * used to render the game to the canvas as it unfolds
  */
-let scene$ = Observable.combineLatest(snake$, apples$, score$, (snake, apples, score) => ({ snake, apples, score }));
+let scene$ = Observable.combineLatest(snake$, apples$, score$, playing$, (snake, apples, score, playing) => ({ snake, apples, score, playing }));
 
 /**
  * This stream takes care of rendering the game while maintaining 60 FPS
